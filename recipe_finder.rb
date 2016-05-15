@@ -39,8 +39,8 @@ class RecipeFinder
     find_recipe_with_all_ingredients_in_fridge(recipes_with_ingredient)
   end
 
-  def find_recipe_with_all_ingredients_in_fridge(recipes_with_ingredient)
-    recipes_with_ingredient.find do |recipe|
+  def find_recipe_with_all_ingredients_in_fridge(recipes)
+    recipes.find do |recipe|
       all_ingredients_in_fridge?(recipe['ingredients'])
     end
   end
@@ -65,7 +65,7 @@ class RecipeFinder
     recipe['ingredients'].any? { |ingredient| ingredient['item'] == fridge_item['item'] }
   end
 
-  # fridge items as array & sorted by use-by-date
+  # fridge items as array of hashes & sorted by use-by-date
   def fridge
     @fridge ||= CSV.read(fridge_csv)
                   .map { |item_info| Hash[ CSV_KEYS.zip(item_info) ] }
