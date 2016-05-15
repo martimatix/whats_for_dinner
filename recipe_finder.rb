@@ -4,6 +4,7 @@ require 'csv'
 class RecipeFinder
   attr_reader :fridge_csv, :recipes_json
 
+  class FileNotFoundError < StandardError; end
   CSV_KEYS = %w(item quantity unit-of-measure use-by-date)
 
   def initialize(fridge_csv, recipes_json)
@@ -12,15 +13,21 @@ class RecipeFinder
   end
 
   def perform
+    raise FileNotFoundError.new('fridge csv could not be found.') unless fridge_csv_found?
+    raise FileNotFoundError.new('recipe json could not be found.') unless recipe_json_found?
+    recipe_finder
+  end
+
+  private
+
+  def recipe_finder
     return 'Call for takeout' if fridge.empty? || recipes.empty?
     fridge_item = fridge.first
     recipe = find_recipe(fridge_item)
     return recipe['name'] if recipe
     fridge.shift
-    perform
+    recipe_finder
   end
-
-  private
 
   def find_recipe(fridge_item)
     # partion recipes into those that contain the fridge_item and those that don't
@@ -72,5 +79,13 @@ class RecipeFinder
 
   def file_contents(file_name)
     File.open(file_name, 'rb').read
+  end
+
+  def fridge_csv_found?
+    File.file?(fridge_csv)
+  end
+
+  def recipes_json_found?
+    File.file?(recipes_json)
   end
 end
