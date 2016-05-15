@@ -73,11 +73,7 @@ class RecipeFinder
   end
 
   def recipes
-    contents = file_contents(recipes_json)
+    contents = File.open(recipes_json, 'rb').read
     @recipes ||= JSON.parse(contents)
-  end
-
-  def file_contents(file_name)
-    File.open(file_name, 'rb').read
   end
 end
