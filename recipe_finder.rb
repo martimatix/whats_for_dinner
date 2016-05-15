@@ -13,8 +13,8 @@ class RecipeFinder
   end
 
   def perform
-    raise FileNotFoundError.new('fridge csv could not be found.') unless fridge_csv_found?
-    raise FileNotFoundError.new('recipe json could not be found.') unless recipe_json_found?
+    raise FileNotFoundError.new('fridge csv could not be found.') unless File.file?(fridge_csv)
+    raise FileNotFoundError.new('recipe json could not be found.') unless File.file?(recipes_json)
     recipe_finder
   end
 
@@ -79,13 +79,5 @@ class RecipeFinder
 
   def file_contents(file_name)
     File.open(file_name, 'rb').read
-  end
-
-  def fridge_csv_found?
-    File.file?(fridge_csv)
-  end
-
-  def recipes_json_found?
-    File.file?(recipes_json)
   end
 end
